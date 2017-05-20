@@ -1,0 +1,35 @@
+{
+    "name": "floriangaerber/magnesium",
+    "type": "library",
+    "description": "A wrapper for the Mailgun API-client",
+    "keywords": ["mailgun", "email", "api"],
+    "homepage": "https://github.com/floriangaerber/Magnesium-PHP",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Florian Gärber",
+            "email": "hello@floriangaer.be",
+            "homepage": "http://floriangaer.be",
+            "role": "Developer"
+        }
+    ],
+    "autoload": {
+        "psr-4": { "Magnesium\\": "src\\Magnesium" }
+    },
+    "scripts": {
+        "test": [
+            "phpunit",
+            "php-cs-fixer fix --dry-run"
+        ],
+        "fix-style": "php-cs-fixer fix --config=.php_cs",
+        "phpdoc-phar": "php phpDocumentor.phar -d ./src/Magnesium -t ./phpdoc"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6.1",
+        "friendsofphp/php-cs-fixer": "^2.3"
+    },
+    "require": {
+        "php": "^7.0",
+        "mailgun/mailgun-php": "^2.3"
+    }
+}
