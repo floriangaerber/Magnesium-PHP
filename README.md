@@ -1,4 +1,8 @@
 # Magnesium-PHP
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](LICENSE)
+[![Packagist](https://img.shields.io/packagist/v/floriangaerber/magnesium.svg?style=flat-square)](https://packagist.org/packages/floriangaerber/magnesium)
+[![Dependency Status](https://www.versioneye.com/user/projects/59218fdf8dcc41003af21edd/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/59218fdf8dcc41003af21edd)
+
 Wrapper for the [Mailgun](https://mailgun.com) API-client.
 
 ## Installation
