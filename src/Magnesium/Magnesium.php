@@ -73,7 +73,7 @@ class Magnesium
      *
      * @return Messages\Bulk
      */
-    public function newBulkMessage(string $mgDomain = null)
+    public function newBulkMessage(string $mgDomain)
     {
         return new Messages\Bulk($this->mgKey, $mgDomain);
     }

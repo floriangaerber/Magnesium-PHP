@@ -32,11 +32,9 @@ class Bulk
      * @param string $mgKey    Your Mailgun API-key.
      * @param string $mgDomain Your Mailgun domain.
      */
-    public function __construct(string $mgKey, string $mgDomain = null)
+    public function __construct(string $mgKey, string $mgDomain)
     {
-        if ($mgDomain) {
-            $this->setDomain($mgDomain);
-        }
+        $this->setDomain($mgDomain);
         $this->mgKey = $mgKey;
     }
 
