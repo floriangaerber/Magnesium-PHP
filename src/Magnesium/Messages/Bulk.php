@@ -24,13 +24,15 @@ class Bulk
 
     protected $customVariables = [];
 
-    protected $config = [];
+    protected $config = [
+        'escapeHtml' => true,
+    ];
 
     /**
      * Instantiate a bulk message with your Mailgun API-key and optionally.
      *
-     * @param string $mgKey    Your Mailgun API-key.
-     * @param string $mgDomain Your Mailgun domain.
+     * @param string $mgKey    your Mailgun API-key
+     * @param string $mgDomain your Mailgun domain
      */
     public function __construct(string $mgKey, string $mgDomain)
     {
@@ -524,7 +526,7 @@ class Bulk
     /**
      * Sends the message.
      *
-     * @return array API-Response.
+     * @return array aPI-Response
      */
     public function send()
     {
@@ -554,8 +556,11 @@ class Bulk
                 }
             }
         } else {
-            // FIXME: Mailgun doesnt sanatize HTML chars
-            // TODO: Sanize HTML (with option to disable)
+            if ($this->config['escapeHtml']) {
+                array_walk_recursive($this->recipients, function (&$value) {
+                    $value = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+                });
+            }
             $this->mgConfig['recipient-variables'] = json_encode($this->recipients);
         }
 
@@ -563,7 +568,7 @@ class Bulk
             $this->mgConfig["h:$name"] = $value;
         }
 
-        foreach ($this->customVariable as $key => $value) {
+        foreach ($this->customVariables as $key => $value) {
             $this->mgConfig["v:$key"] = $value;
             // TODO: Add recip vars support to custom variables
         }
