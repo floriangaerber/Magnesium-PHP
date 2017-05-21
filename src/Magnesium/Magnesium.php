@@ -69,7 +69,7 @@ class Magnesium
     }
 
     /**
-     * @param string $mgDomain Your mailgun domain to send from.
+     * @param string $mgDomain your mailgun domain to send from
      *
      * @return Messages\Bulk
      */
