@@ -57,7 +57,7 @@ Mailgun also does not escape HTML in `%recipient.variables%`. Magnesium automati
 
 ## About
 ### Contributing
-View [CONTRIBUTING.md](/CONTRIBUTING.md) for information on creating issues, reporting bugs and requesting features.
+View [CONTRIBUTING.md](CONTRIBUTING.md) for information on creating issues, reporting bugs and requesting features.
 
 ### License
-Magnesium is released under the MIT License, view the [LICENSE](/LICENSE) file for details.
+Magnesium is released under the MIT License, view the [LICENSE](LICENSE) file for details.
