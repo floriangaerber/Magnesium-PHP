@@ -10,10 +10,7 @@ $message->setFrom('hello@example.org'); // From: hello@example.org
 $message->setReplyTo('john.d@example.org', 'John Dee') // Reply-To: John Dee <hello@example.org>
 ```
 `setFrom` and `setReplyTo` both accept an email as the first parameter and an optional name as the second parameter.
-You can also use an already formatted email string:
-```php
-$message->setFrom('John Dee <john.d@example.org>') // From: John Dee <john.d@example.org>
-```
+
 ##### Getters
 - `getFrom`: Associative array [email, name?:`null`]
 - `getFromEmail`: `From` email adress
