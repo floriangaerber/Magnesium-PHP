@@ -13,11 +13,11 @@ namespace Magnesium\Message;
 use Magnesium\Error;
 
 /**
- * BulkMessage class.
+ * BatchMessage class.
  *
  * Send to a group of users of varying size
  */
-class BulkMessage extends Base
+class BatchMessage extends Base
 {
     /**
      * Whether HTML is escaped or not.
@@ -38,7 +38,7 @@ class BulkMessage extends Base
      *
      * @param bool $bool Whether to escape HTML in recipient Variables
      *
-     * @return BulkMessage
+     * @return BatchMessage
      */
     public function setEscapeHtmlInRecipientVariables(bool $bool)
     {
@@ -63,7 +63,7 @@ class BulkMessage extends Base
      * @param string $email
      * @param array  $vars
      *
-     * @return BulkMessage
+     * @return BatchMessage
      */
     public function addRecipient(string $email, array $vars = [])
     {
@@ -81,7 +81,7 @@ class BulkMessage extends Base
      *
      * @param string $email
      *
-     * @return BulkMessage
+     * @return BatchMessage
      */
     public function removeRecipient(string $email)
     {
@@ -93,7 +93,7 @@ class BulkMessage extends Base
     /**
      * Remove all recipients.
      *
-     * @return BulkMessage
+     * @return BatchMessage
      */
     public function removeRecipients()
     {

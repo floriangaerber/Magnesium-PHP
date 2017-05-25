@@ -1,7 +1,7 @@
-# BulkMessage
-This is a minimal example for sending bulk messages:
+# BatchMessage
+This is a minimal example for sending Batch messages:
 ```php
-$message = new BulkMessage(MAILGUN_KEY, MAILGUN_DOMAIN);
+$message = new BatchMessage(MAILGUN_KEY, MAILGUN_DOMAIN);
 
 foreach ($recipients as $recipient) {
     $message->addRecipient($recipient['email'], [
@@ -18,14 +18,14 @@ $message->setText(
 
 $mailgunResponse = $message->send();
 ```
-Every message sent with the `BulkMessage` class requires you to at least add 1 recipient and set at least one of the message body types.
+Every message sent with the `BatchMessage` class requires you to at least add 1 recipient and set at least one of the message body types.
 
 ## Use cases
-`BulkMessage` was designed for sending personalized messages to a group of users of varying size.
+`BatchMessage` was designed for sending personalized messages to a group of users of varying size.
 Assume you want to notify users in a forum conversation about new comments.
 You may have users with disabled notifications, users that have manually subscribed the thread, users that have commented but have manually disabled notifications about this thread, et cetera.
 This may leave you with a group of users to notify of `n >= 0`. Now if your user count is 0, you won't have to spin up a message. If your user count is 2 or larger, you could use Mailgun's recipient variables. But if you had only 1 user to notify, Mailgun would not use recipient variables and require you to modify your email body yourself.
-`BulkMessage` was made to fix this nuisance: It allows you to use only one set of code and templates for recipient groups of all sizes (larger than zero, of course).
+`BatchMessage` was made to fix this nuisance: It allows you to use only one set of code and templates for recipient groups of all sizes (larger than zero, of course).
 
 ## Configuration
 ### Basics
@@ -53,7 +53,7 @@ If you do not set `email` in the recipient variables, it will be set to the reci
 - `getRecipientCount()` Returns the count of recipients
 
 ### HTML-escaping
-`BulkMessage` automatically escapes HTML in recipient variables by default, which you can adjust using like this:
+`BatchMessage` automatically escapes HTML in recipient variables by default, which you can adjust using like this:
 ```php
 $message->setEscapeHtmlInRecipientVariables(false);
 ```
