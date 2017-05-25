@@ -1,7 +1,11 @@
 <?php
 
 /**
- * This file is part of the Magnesium package.
+ * This file is part of the floriangaerber/magnesium package.
+ *
+ * @copyright 2017 Florian Gärber
+ * @license MIT
+ * @license See "LICENSE" for details
  */
 
 namespace Magnesium;
@@ -13,11 +17,17 @@ use Mailgun\Mailgun;
  */
 class Magnesium
 {
+    /**
+     * Your Mailgun API key.
+     *
+     * @property string $mgKey
+     */
     protected $mgKey;
 
     /**
-     * @param string $mgKey    Mailgun Private Key
-     * @param string $mgDomain (Optional) Mailgun Domain
+     * Instantiate Magnesium with your API-key.
+     *
+     * @param string $mgKey Mailgun Private Key
      */
     public function __construct(string $mgKey)
     {
@@ -53,28 +63,14 @@ class Magnesium
     }
 
     /**
-     * Gets email string from email and name.
+     * Create a new BulkMessage.
      *
-     * Possible usage formats:
-     * - setFrom('hello@floriangaer.be')
-     * - setFrom('Florian <hello@floriangaer.be>')
-     * - setFrom('hello@floriangaer.be', 'Florian')
-     *
-     * @param string $email Email address
-     * @param string $name  (Optional) Name
-     */
-    public function getEmailString(string $email, string $name = null)
-    {
-        return $name ? sprintf('%s <%s>', $name, $email) : $email;
-    }
-
-    /**
      * @param string $mgDomain your mailgun domain to send from
      *
-     * @return Messages\Bulk
+     * @return Message\BulkMessage
      */
     public function newBulkMessage(string $mgDomain)
     {
-        return new Messages\Bulk($this->mgKey, $mgDomain);
+        return new Message\BulkMessage($this->mgKey, $mgDomain);
     }
 }
