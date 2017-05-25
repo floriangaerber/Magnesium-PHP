@@ -546,7 +546,7 @@ class Base
      */
     public function getCustomHeader(string $name)
     {
-        return $this->customHeaders[$name];
+        return isset($this->customHeaders[$name]) ? $this->customHeaders[$name] : null;
     }
 
     /**
