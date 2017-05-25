@@ -353,7 +353,7 @@ class Base
      *
      * @return Base
      */
-    public function setText($txt)
+    public function setText(string $txt)
     {
         $this->textBody = $txt;
 
