@@ -165,33 +165,51 @@ class BatchMessage extends Base
                 $text = $this->replaceRecipientVariables($text, $recipient);
             }
         } else {
-            $CONFIG['recipient-variables'] = json_encode($recipients);
+            $CONFIG = $this->addRecipientVariablesToConfig($CONFIG, $recipients);
         }
 
-        $CONFIG['html'] = $html;
-        $CONFIG['text'] = $text;
+        $CONFIG = $this->addMessageBodyToConfig($CONFIG, $html, $text);
 
         $CONFIG = $this->addCustomHeadersToConfig($CONFIG);
         $CONFIG = $this->addOptionsToConfig($CONFIG);
-
-        $CONFIG['from'] = $this->getFromString();
-
-        $CONFIG['subject'] = $this->getSubject();
-
-        if ($this->getReplyToString()) {
-            $CONFIG['h:Reply-To'] = $this->getReplyToString();
-        }
-
-        $recipientList = $this->getRecipients();
-        $i = 0;
-        foreach ($recipientList as $email => $vars) {
-            $recipientStrings[$i] = $this->formatEmailString($email, $vars['name']);
-            ++$i;
-        }
-
-        $CONFIG['to'] = implode(', ', $recipientStrings);
+        $CONFIG = $this->addFSRtToConfig($CONFIG);
+        $CONFIG = $this->addRecipientsToConfig($CONFIG);
 
         return $CONFIG;
+    }
+
+    /**
+    * Adds recipient variables to config
+    * @param array $config
+    * @param array $vars
+    * @return array
+    */
+    protected function addRecipientVariablesToConfig(array $config, array $vars = null)
+    {
+        $config['recipient-variables'] = json_encode($vars ?: $this->getRecipients());
+        return $config;
+    }
+
+    /**
+    * Adds To string to config
+    * @param array $config
+    * @return array
+    */
+    protected function addRecipientsToConfig(array $config)
+    {
+        $i = 0;
+        $to = [];
+        foreach ($recipients as $recipientEmail => $recipientVariables) {
+            $to[$i] = $this->formatEmailString(
+                $recipientEmail,
+                isset($recipientVariables['name']) ? $recipientVariables['name'] : null
+            );
+            $i++;
+        }
+
+        $config['to'] = implode(', ', $to);
+
+        return $config;
     }
 
     /**
