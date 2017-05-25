@@ -601,10 +601,12 @@ class Base
     }
 
     /**
-    * Adds From, Subject, ReplyTo to config.
-    * @param array $config
-    * @return array
-    */
+     * Adds From, Subject, ReplyTo to config.
+     *
+     * @param array $config
+     *
+     * @return array
+     */
     protected function addFSRtToConfig(array $config)
     {
         $config['subject'] = $this->getSubject();
@@ -618,19 +620,21 @@ class Base
     }
 
     /**
-    * Adds HTML and Text message bodies to config.
-    *
-    * Override set HTMl and Text through arguments.
-    *
-    * @param array $config
-    * @param string $html Custom HTML body
-    * @param string $text Custom Text body
-    * @return array
-    */
+     * Adds HTML and Text message bodies to config.
+     *
+     * Override set HTMl and Text through arguments.
+     *
+     * @param array  $config
+     * @param string $html   Custom HTML body
+     * @param string $text   Custom Text body
+     *
+     * @return array
+     */
     protected function addMessageBodyToConfig(array $config, string $html = null, string $text = null)
     {
         $config['html'] = $html ?: $this->getHtml();
         $config['text'] = $text ?: $this->getText();
+
         return $config;
     }
 

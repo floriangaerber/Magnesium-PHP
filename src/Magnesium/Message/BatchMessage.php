@@ -179,22 +179,33 @@ class BatchMessage extends Base
     }
 
     /**
-    * Adds recipient variables to config
-    * @param array $config
-    * @param array $vars
-    * @return array
-    */
+     * Adds recipient variables to config.
+     *
+     * @param array $config
+     * @param array $vars
+     *
+     * @return array
+     */
     protected function addRecipientVariablesToConfig(array $config, array $vars = null)
     {
         $config['recipient-variables'] = json_encode($vars ?: $this->getRecipients());
+
         return $config;
     }
 
     /**
-    * Adds To string to config
-    * @param array $config
-    * @return array
-    */
+     * Adds To string to config.
+     *
+     * Keep in mind when using user input:
+     * Prevent names and emails from being additional email addresses.
+     *
+     * @TODO Consider validating/preventing, for example by removing < > ,
+     * @TODO Test possible attack vectors
+     *
+     * @param array $config
+     *
+     * @return array
+     */
     protected function addRecipientsToConfig(array $config)
     {
         $i = 0;
@@ -204,7 +215,7 @@ class BatchMessage extends Base
                 $recipientEmail,
                 isset($recipientVariables['name']) ? $recipientVariables['name'] : null
             );
-            $i++;
+            ++$i;
         }
 
         $config['to'] = implode(', ', $to);
