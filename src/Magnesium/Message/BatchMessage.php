@@ -210,6 +210,7 @@ class BatchMessage extends Base
     {
         $i = 0;
         $to = [];
+        $recipients = $this->getRecipients();
         foreach ($recipients as $recipientEmail => $recipientVariables) {
             $to[$i] = $this->formatEmailString(
                 $recipientEmail,
