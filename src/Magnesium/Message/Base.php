@@ -235,6 +235,7 @@ class Base
     }
 
     /**
+     * This removes "To" string breaking symbols (For messages with multiple To).
      *
      * Should a user have chosen a name like "no1@example.com, Not Okay <no2@example.com>, Sherbert",
      * Mailgun would accept the following to: "user@example.com, user2@example.com, no1@example.com, Not Okay <no2@example.com>, Sherbert <hello@example.com>"
