@@ -11,14 +11,14 @@ class MessageBaseTest extends TestCase
 {
     public function testConstruct()
     {
-        $m = new \Magnesium\Message\Base(MAILGUN_KEY, MAILGUN_DOMAIN);
+        $m = new \Magnesium\Message\Base('MAILGUN_KEY', 'MAILGUN_DOMAIN');
 
-        $this->assertEquals(MAILGUN_DOMAIN, $m->getDomain());
+        $this->assertEquals('MAILGUN_DOMAIN', $m->getDomain());
     }
 
     public function testSetDomain()
     {
-        $m = new \Magnesium\Message\Base(MAILGUN_KEY, MAILGUN_DOMAIN);
+        $m = new \Magnesium\Message\Base('MAILGUN_KEY', 'MAILGUN_DOMAIN');
 
         $m->setDomain('example.com');
 
@@ -27,9 +27,9 @@ class MessageBaseTest extends TestCase
 
     public function testSetFrom()
     {
-        $m = new \Magnesium\Message\Base(MAILGUN_KEY, MAILGUN_DOMAIN);
+        $m = new \Magnesium\Message\Base('MAILGUN_KEY', 'MAILGUN_DOMAIN');
 
-        $this->assertEquals('postmaster@'.MAILGUN_DOMAIN, $m->getFromEmail());
+        $this->assertEquals('postmaster@'.'MAILGUN_DOMAIN', $m->getFromEmail());
         $this->assertEquals(null, $m->getFromName());
 
         $m->setFrom('hello@example.com');
@@ -50,7 +50,7 @@ class MessageBaseTest extends TestCase
 
     public function testReplyTo()
     {
-        $m = new \Magnesium\Message\Base(MAILGUN_KEY, MAILGUN_DOMAIN);
+        $m = new \Magnesium\Message\Base('MAILGUN_KEY', 'MAILGUN_DOMAIN');
 
         $this->assertEquals(null, $m->getReplyToEmail());
         $this->assertEquals(null, $m->getReplyToName());
@@ -74,7 +74,7 @@ class MessageBaseTest extends TestCase
 
     public function testSetSubject()
     {
-        $m = new \Magnesium\Message\Base(MAILGUN_KEY, MAILGUN_DOMAIN);
+        $m = new \Magnesium\Message\Base('MAILGUN_KEY', 'MAILGUN_DOMAIN');
 
         $this->assertEquals('', $m->getSubject());
 
@@ -84,7 +84,7 @@ class MessageBaseTest extends TestCase
 
     public function testSetMessageBody()
     {
-        $m = new \Magnesium\Message\Base(MAILGUN_KEY, MAILGUN_DOMAIN);
+        $m = new \Magnesium\Message\Base('MAILGUN_KEY', 'MAILGUN_DOMAIN');
 
         $this->assertEquals(null, $m->getHtml());
         $this->assertEquals(null, $m->getText());
@@ -100,7 +100,7 @@ class MessageBaseTest extends TestCase
 
     public function testMailgunOptions()
     {
-        $m = new \Magnesium\Message\Base(MAILGUN_KEY, MAILGUN_DOMAIN);
+        $m = new \Magnesium\Message\Base('MAILGUN_KEY', 'MAILGUN_DOMAIN');
 
         $this->assertEquals(false, $m->isTestmode());
         $this->assertEquals(true, $m->isRequiringTls());
@@ -119,7 +119,7 @@ class MessageBaseTest extends TestCase
 
     public function testDeliveryTime()
     {
-        $m = new \Magnesium\Message\Base(MAILGUN_KEY, MAILGUN_DOMAIN);
+        $m = new \Magnesium\Message\Base('MAILGUN_KEY', 'MAILGUN_DOMAIN');
 
         $this->assertEquals(null, $m->getDeliveryTime());
 
@@ -131,7 +131,7 @@ class MessageBaseTest extends TestCase
 
     public function testCustomHeaders()
     {
-        $m = new \Magnesium\Message\Base(MAILGUN_KEY, MAILGUN_DOMAIN);
+        $m = new \Magnesium\Message\Base('MAILGUN_KEY', 'MAILGUN_DOMAIN');
 
         $this->assertEquals([], $m->getCustomHeaders());
         $this->assertEquals(null, $m->getCustomHeader('No-Header'));
