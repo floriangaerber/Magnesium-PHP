@@ -44,4 +44,31 @@ class Recipient
     {
         return $this->vars[$key] ?? null;
     }
+
+    /**
+     * Set a recipient variable.
+     *
+     * @param mixed $key
+     * @param mixed $value
+     */
+    public function __set($key, $value)
+    {
+        $this->vars[$key] = $value;
+    }
+
+    /**
+     * Returns the recipient variables (HTML-escaped).
+     *
+     * @return array
+     */
+    public function getVariables(): array
+    {
+        $vars = $this->vars;
+
+        array_walk_recursive($vars, function (&$value) {
+            $value = htmlspecialchars($value, ENT_QUOTES);
+        });
+
+        return $vars;
+    }
 }
