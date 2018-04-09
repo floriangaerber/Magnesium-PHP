@@ -51,16 +51,16 @@ try {
 }
 ```
 
-You can also get the options array that would be passed to the Mailgun client:
+You can also get the config array that would be passed to the Mailgun client:
 
 ```php
-$mailgunOptions = $message->getOptions();
+$mailgunConfig = $message->getConfig();
 
 // ... change options
 
 try {
-    $mailgunResponse = $mailgun->sendMessage($mailgunDomain, $mailgunOptions);
-    // or: $mailgunResponse = $message->send($mailgunOptions);
+    $mailgunResponse = $mailgun->sendMessage($mailgunDomain, $mailgunConfig);
+    // or: $mailgunResponse = $message->send($mailgunConfig);
 } catch (\Mailgun\Exception $ex) {
     // Handle Mailgun Exceptions
 }
