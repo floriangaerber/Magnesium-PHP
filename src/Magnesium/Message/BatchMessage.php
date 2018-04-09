@@ -41,7 +41,7 @@ class BatchMessage extends AbstractMessage
      */
     public function addRecipient(Recipient $recipient): self
     {
-        $this->recipients[$email] = $recipient;
+        $this->recipients[$recipient->email] = $recipient;
 
         return $this;
     }
@@ -151,13 +151,14 @@ class BatchMessage extends AbstractMessage
     {
         // If there is only 1 recipient: Replace recipient variables in message body
         if (1 === $this->getRecipientCount()) {
-            $recipient = $this->getRecipients();
+            $recipient = $this->getRecipients()[0];
 
             $html = $this->hasHtml()
                 ? $this->replaceRecipientVariables($this->getHtml(), $recipient->getVariables())
                 : null;
+            // Here we can allow unescaped variables
             $text = $this->hasText()
-                ? $this->replaceRecipientVariables($this->getText(), $recipient->getVariables())
+                ? $this->replaceRecipientVariables($this->getText(), $recipient->getUnescapedVariables())
                 : null;
 
             $config['html'] = $html;
@@ -193,6 +194,9 @@ class BatchMessage extends AbstractMessage
     protected function replaceRecipientVariables($string, $vars)
     {
         foreach ($vars as $key => $value) {
+            if (is_array($value)) {
+                throw new \InvalidArgumentException('Recipient variables must not be nested');
+            }
             $string = str_replace('%recipient.'.$key.'%', $value, $string);
         }
 
