@@ -71,4 +71,14 @@ class Recipient
 
         return $vars;
     }
+
+    /**
+     * Returns unescaped recipient variables.
+     *
+     * @return array
+     */
+    public function getUnescapedVariables(): array
+    {
+        return $this->vars;
+    }
 }
