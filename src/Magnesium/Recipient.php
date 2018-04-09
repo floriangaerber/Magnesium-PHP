@@ -37,6 +37,8 @@ class Recipient
      * Get a recipient variable.
      *
      * @param mixed $key
+     *
+     * @return mixed
      */
     public function __get($key)
     {
