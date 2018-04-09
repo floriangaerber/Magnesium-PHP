@@ -51,7 +51,7 @@ try {
 }
 ```
 
-You can also get the options object that would be passed to the Mailgun client:
+You can also get the options array that would be passed to the Mailgun client:
 
 ```php
 $mailgunOptions = $message->getOptions();
