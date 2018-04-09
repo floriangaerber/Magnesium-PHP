@@ -26,9 +26,6 @@ class RecipientTest extends TestCase
         $r = new Recipient('john.dee@example.com', [
             'id' => 123,
             'name' => '<b>John Dee</b>',
-            'nested' => [
-                'thing' => 'foo',
-            ],
         ]);
 
         $vars = $r->getVariables();
@@ -36,7 +33,5 @@ class RecipientTest extends TestCase
         $this->assertEquals('john.dee@example.com', $vars['email']);
         $this->assertEquals(123, $vars['id']);
         $this->assertEquals('&lt;b&gt;John Dee&lt;/b&gt;', $vars['name']);
-        $this->assertEquals(['thing' => 'foo'], $vars['nested']);
-        $this->assertEquals('foo', $vars['nested']['thing']);
     }
 }
