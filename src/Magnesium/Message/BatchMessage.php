@@ -1,61 +1,21 @@
 <?php
 
-/**
- * This file is part of the floriangaerber/magnesium package.
- *
- * @copyright 2017 Florian Gärber
- * @license MIT
- * @license See "LICENSE" for details
- */
-
 namespace Magnesium\Message;
 
-use Magnesium\Error;
+use Magnesium\Recipient;
 
 /**
- * BatchMessage class.
- *
- * Send to a group of users of varying size
+ * This message class allows sending batch messages to 1 or more users via
+ * recipient-variables.
  */
-class BatchMessage extends Base
+class BatchMessage extends AbstractMessage
 {
-    /**
-     * Whether HTML is escaped or not.
-     *
-     * @property bool $escapeHtml
-     */
-    protected $escapeHtml = true;
-
     /**
      * Recipients.
      *
-     * @property array $recipients
+     * @var array[Recipient]
      */
     protected $recipients = [];
-
-    /**
-     * Enable or disable escaping HTML in recipient variables.
-     *
-     * @param bool $bool Whether to escape HTML in recipient Variables
-     *
-     * @return BatchMessage
-     */
-    public function setEscapeHtmlInRecipientVariables(bool $bool)
-    {
-        $this->escapeHtml = $bool;
-
-        return $this;
-    }
-
-    /**
-     * Whether or not currently escaping HTML in recipient variables.
-     *
-     * @return bool
-     */
-    public function isEscapingHtmlInRecipientVariables()
-    {
-        return $this->escapeHtml;
-    }
 
     /**
      * Add a recipient by email, optionally with recipient variables.
@@ -63,15 +23,25 @@ class BatchMessage extends Base
      * @param string $email
      * @param array  $vars
      *
-     * @return BatchMessage
+     * @return self
      */
-    public function addRecipient(string $email, array $vars = [])
+    public function addNewRecipient($email, array $vars = []): self
     {
-        if (!isset($vars['email'])) {
-            $vars['email'] = $email;
-        }
+        $this->recipients[$email] = new Recipient($email, $vars);
 
-        $this->recipients[$email] = $vars;
+        return $this;
+    }
+
+    /**
+     * Add an existing Recipient object.
+     *
+     * @param Recipient $recipient
+     *
+     * @return self
+     */
+    public function addRecipient(Recipient $recipient): self
+    {
+        $this->recipients[$email] = $recipient;
 
         return $this;
     }
@@ -81,9 +51,9 @@ class BatchMessage extends Base
      *
      * @param string $email
      *
-     * @return BatchMessage
+     * @return self
      */
-    public function removeRecipient(string $email)
+    public function removeRecipient(string $email): self
     {
         unset($this->recipients[$email]);
 
@@ -93,9 +63,9 @@ class BatchMessage extends Base
     /**
      * Remove all recipients.
      *
-     * @return BatchMessage
+     * @return self
      */
-    public function removeRecipients()
+    public function removeRecipients(): self
     {
         $this->recipients = [];
 
@@ -107,9 +77,9 @@ class BatchMessage extends Base
      *
      * @param string $email
      *
-     * @return array
+     * @return Recipient
      */
-    public function getRecipient(string $email)
+    public function getRecipient(string $email): Recipient
     {
         return $this->recipients[$email];
     }
@@ -117,11 +87,11 @@ class BatchMessage extends Base
     /**
      * Get all recipients.
      *
-     * @return array
+     * @return array[Recipients]
      */
-    public function getRecipients()
+    public function getRecipients(): array
     {
-        return $this->recipients;
+        return array_values($this->recipients);
     }
 
     /**
@@ -129,94 +99,27 @@ class BatchMessage extends Base
      *
      * @return int
      */
-    public function getRecipientCount()
+    public function getRecipientCount(): int
     {
         return count($this->recipients);
     }
 
     /**
-     * Makes the configuration for the Mailgun client.
-     *
-     * @return array Configuration
-     */
-    public function getConfig()
-    {
-        $CONFIG = [];
-        $count = $this->getRecipientCount();
-
-        $html = $this->getHtml();
-        $text = $this->getText();
-        if (!$html && !$text) {
-            throw new Error\Base('No email body set', 1);
-        }
-
-        $recipients = $this->isEscapingHtmlInRecipientVariables()
-            ? $recipients = $this->getEscapedRecipients()
-            : $this->getRecipients();
-
-        if ($count < 1) {
-            throw new Error\Base('No recipients specified', 1);
-        } elseif ($count === 1) {
-            $recipient = array_values($recipients)[0];
-            if ($html) {
-                $html = $this->replaceRecipientVariables($html, $recipient);
-            }
-            if ($text) {
-                $text = $this->replaceRecipientVariables($text, $recipient);
-            }
-        } else {
-            $CONFIG = $this->addRecipientVariablesToConfig($CONFIG, $recipients);
-        }
-
-        $CONFIG = $this->addMessageBodyToConfig($CONFIG, $html, $text);
-
-        $CONFIG = $this->addCustomHeadersToConfig($CONFIG);
-        $CONFIG = $this->addOptionsToConfig($CONFIG);
-        $CONFIG = $this->addFSRtToConfig($CONFIG);
-        $CONFIG = $this->addRecipientsToConfig($CONFIG);
-
-        return $CONFIG;
-    }
-
-    /**
-     * Adds recipient variables to config.
-     *
-     * @param array $config
-     * @param array $vars
-     *
-     * @return array
-     */
-    protected function addRecipientVariablesToConfig(array $config, array $vars = null)
-    {
-        $config['recipient-variables'] = json_encode($vars ?: $this->getRecipients());
-
-        return $config;
-    }
-
-    /**
-     * Adds To string to config.
-     *
-     * Keep in mind when using user input:
-     * Prevent names and emails from being additional email addresses.
-     *
-     * @TODO Consider validating/preventing, for example by removing < > ,
-     * @TODO Test possible attack vectors
+     * Add Recipients to the To-string.
      *
      * @param array $config
      *
      * @return array
      */
-    protected function addRecipientsToConfig(array $config)
+    protected function addRecipientsToConfig(array $config): array
     {
-        $i = 0;
         $to = [];
-        $recipients = $this->getRecipients();
-        foreach ($recipients as $recipientEmail => $recipientVariables) {
-            $to[$i] = $this->formatEmailString(
-                $recipientEmail,
-                isset($recipientVariables['name']) ? $recipientVariables['name'] : null
+
+        foreach ($this->getRecipients() as $recipient) {
+            $to[] = $this->formatEmailString(
+                $recipient->email,
+                $recipient->name
             );
-            ++$i;
         }
 
         $config['to'] = implode(', ', $to);
@@ -225,31 +128,58 @@ class BatchMessage extends Base
     }
 
     /**
-     * Send message.
+     * Add recipient variables to the config.
      *
-     * @param array $config optional config override
-     *
-     * @return \stdClass Mailgun Response
-     */
-    public function send(array $config = null)
-    {
-        return $this->sendMessage($config ?: $this->getConfig());
-    }
-
-    /**
-     * Get recipients with HTML-escaped variables.
+     * @param array $config
      *
      * @return array
      */
-    protected function getEscapedRecipients()
+    protected function addRecipientVariablesToConfig(array $config): array
     {
-        $recipients = $this->getRecipients();
+        $vars = [];
 
-        array_walk_recursive($recipients, function (&$value) {
-            $value = htmlspecialchars($value, ENT_QUOTES);
-        });
+        foreach ($this->getRecipients() as $recipient) {
+            $vars[$recipient->email] = $recipient->getVariables();
+        }
 
-        return $recipients;
+        $config['recipient-variables'] = json_encode($vars);
+
+        return $config;
+    }
+
+    protected function addMessageBodyToConfig(array $config = []): array
+    {
+        // If there is only 1 recipient: Replace recipient variables in message body
+        if (1 === $this->getRecipientCount()) {
+            $recipient = $this->getRecipients();
+
+            $html = $this->hasHtml()
+                ? $this->replaceRecipientVariables($this->getHtml(), $recipient->getVariables())
+                : null;
+            $text = $this->hasText()
+                ? $this->replaceRecipientVariables($this->getText(), $recipient->getVariables())
+                : null;
+
+            $config['html'] = $html;
+            $config['text'] = $text;
+        } else {
+            $config['html'] = $this->getHtml();
+            $config['text'] = $text->getText();
+            $config = $this->addRecipientVariablesToConfig($config);
+        }
+
+        return $config;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getConfig(array $config = []): array
+    {
+        $config = parent::getConfig();
+        $config = $this->addRecipientsToConfig($config);
+
+        return $config;
     }
 
     /**

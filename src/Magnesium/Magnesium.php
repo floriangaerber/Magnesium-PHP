@@ -35,42 +35,59 @@ class Magnesium
     }
 
     /**
-     * Validates a webhook.
+     * Validates a Webhook.
      *
-     * @param array $webhook Recieved webhook as array
+     * @param string|int $timestamp
+     * @param string     $token
+     * @param string     $signature
+     *
+     * @source https://github.com/mailgun/mailgun-php/blob/ce484ecbc823ababb98e1402a98109a500a69e3a/src/Mailgun/Api/Webhook.php
      *
      * @return bool
      */
-    public function isValidWebhook(array $webhook)
+    public function validateWebhook($timestamp, string $token, string $signature): bool
     {
-        if (!isset($webhook['timestamp'])
-        || !isset($webhook['token'])
-        || !isset($webhook['signature'])) {
+        if (empty($timestamp) || empty($token) || empty($signature)) {
             return false;
         }
 
-        $ts = (int) $webhook['timestamp'];
+        $hmac = hash_hmac('sha256', $timestamp.$token, $this->mgKey);
 
-        if (abs(time() - $ts) > 15) {
-            return false;
-        }
-
-        return hash_hmac(
-            'sha256',
-            $ts.$webhook['token'],
-            $this->mgKey
-        ) === $webhook['signature'];
+        return hash_equals($hmac, $signature);
     }
 
     /**
-     * Create a new BulkMessage.
+     * Create a new BatchMessage.
      *
-     * @param string $mgDomain your mailgun domain to send from
+     * @param string $domain Mailgun domain to send from
      *
-     * @return Message\BulkMessage
+     * @return BatchMessage
      */
-    public function newBulkMessage(string $mgDomain)
+    public function createBatchMessage(string $domain)
     {
-        return new Message\BulkMessage($this->mgKey, $mgDomain);
+        return new BatchMessage($this->mgKey, $domain);
+    }
+
+    /**
+     * This removes "To" breaking symbols (For messages with multiple To).
+     *
+     * Known breaking symbols are: `<`, `>`, `,` (and `@` for names).
+     *
+     * Example for a breaking name: "x@example, Bill <y@example>, Joe"
+     * In To: "Allen <a@example>, x@example, Bill <y@example>, Joe <b@example>"
+     * (With recipients Allen <a@exmaple> and the breaking name <b@example>).
+     *
+     * @param string $string  Name or email
+     * @param bool   $isEmail
+     *
+     * @return string
+     */
+    public static function removeToStringBreakingSymbols(string $string, bool $isEmail): string
+    {
+        return str_replace(
+            ['>', '<', ','],
+            '',
+            $isEmail ? $string : str_replace('@', '', $string)
+        );
     }
 }
