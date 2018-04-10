@@ -670,9 +670,9 @@ abstract class AbstractMessage
      *
      * @param array $config Mailgun send options
      *
-     * @return array Mailgun Response
+     * @return [type] Mailgun Response
      */
-    public function send(array $config = null): array
+    public function send(array $config = null)
     {
         return $this->mailgunClient->sendMessage(
             $this->getDomain(),
