@@ -10,6 +10,7 @@
 
 namespace Magnesium;
 
+use Magnesium\Message\BatchMessage;
 use Mailgun\Mailgun;
 
 /**
